@@ -35,8 +35,9 @@ int main(){
 	//Pasamos el primer operando al motor
 	write(tubomotor[1], &num1.num, sizeof(num1.num));
 
-	
-	//printf("Primer numero: %d\n", num1.num);
+	//Guardamos el resultado del motor en num1
+	read(2, &num1.num, sizeof(num1.num)); 
+	//printf("Primer numero: %f\n", num1.num);
 	
 	return num1.num;
 }

@@ -6,6 +6,8 @@
 #include <sys/stat.h>
 #include <sys/msg.h>
 
+int op_seguir='n';
+
 
 struct numero{
 	long tipo;
@@ -18,44 +20,26 @@ struct operacion{
 };
 
 
-void menu(float *num1, float *num2, int *operacion){
-	char sig_operacion='+';
-	printf("Introduce un numero: ");
-	scanf("%f", num1);
+void menu(float *num1, float *num2, int *operacion){	
+	if(op_seguir == 'n'){
+		printf("Introduce un numero: ");
+		scanf("%f", num1);
+	}
 	
 	printf("Operacion (+, -, *, /)\n");
-		/*printf("1. Suma\n");
-		printf("2. Resta\n");
-		printf("3. Multiplicacion\n");
-		printf("4. Division\n");*/
-	//printf("Selecciona operacion: ");
-	scanf("%c", &sig_operacion);
-	while(sig_operacion != '+' && sig_operacion != '-' && sig_operacion != '*' && sig_operacion != '/'){
+	printf("1. Suma\n");
+	printf("2. Resta\n");
+	printf("3. Multiplicacion\n");
+	printf("4. Division\n");
+	do{
 		printf("Selecciona operacion: ");
-		scanf("%c", &sig_operacion);
-	}
+		scanf("%d", operacion);
+	}while(*operacion < 1 || *operacion > 4);
+	
 	do{
 		printf("Introduce otro numero: ");
 		scanf("%f", num2);
 	}while(*num2 == 0);
-	
-	switch(sig_operacion){
-		case '+':
-			*operacion = 1;
-		break;
-		
-		case '-':
-			*operacion = 2;
-		break;
-		
-		case '*':
-			*operacion = 3;
-		break;
-		
-		case '/':
-			*operacion = 4;
-		break;
-	}
 }
 
 int main(){
@@ -72,53 +56,60 @@ int main(){
 	clave_cola=ftok("./Makefile", 1024);
 	id_cola=msgget(clave_cola, 0600 | IPC_CREAT);
 	
-	//Obtenemos los parametros
-	menu(&num1.num, &num2.num, &op.opcion);
 	
-	//Indicamos el tipo de los parametros
-	op.tipo=3;
-	num1.tipo=1;
-	num2.tipo=2;
-	
-	//Creamos el proceso hijo OP_1
-	pid_op1=fork();
-	if(pid_op1==0){
-		execl("OP_1", "OP_1", NULL);
-	}
-	
-	//Creamos el proceso hijo OP_2
-	pid_op2=fork();
-	if(pid_op2==0){
-		execl("OP_2", "OP_2", NULL);
-	}
+	do{
+		//Creamos el proceso hijo OP_1
+		pid_op1=fork();
+		if(pid_op1==0){
+			execl("OP_1", "OP_1", NULL);
+		}
+		
+		//Creamos el proceso hijo OP_2
+		pid_op2=fork();
+		if(pid_op2==0){
+			execl("OP_2", "OP_2", NULL);
+		}
 
-	//Creamos el proceso hijo operador
-	pid_operador=fork();
-	if(pid_operador==0){
-		execl("operador", "operador", NULL);
-	}
+		//Creamos el proceso hijo operador
+		pid_operador=fork();
+		if(pid_operador==0){
+			execl("operador", "operador", NULL);
+		}
 	
-	//Creamos la fifo del motor
-	mkfifo("fifo_motor", 0777);
-	
-	//Pasamos el primer operando al proceso OP_1
-	msgsnd(id_cola, (struct msgbuf *) &num1, sizeof(num1) - sizeof(long), 0);
-	
-	//Pasamos el operador al proceso operador
-	msgsnd(id_cola, (struct msgbuf *) &op, sizeof(op) - sizeof(long), 0);
+		//Indicamos el tipo de los parametros
+		op.tipo=3;
+		num1.tipo=1;
+		num2.tipo=2;
+		
+		//Obtenemos los parametros
+		menu(&num1.num, &num2.num, &op.opcion);
+		
+		//Creamos la fifo del motor
+		mkfifo("fifo_motor", 0777);
+		
+		//Pasamos el primer operando al proceso OP_1
+		msgsnd(id_cola, (struct msgbuf *) &num1, sizeof(num1) - sizeof(long), 0);
+		
+		//Pasamos el operador al proceso operador
+		msgsnd(id_cola, (struct msgbuf *) &op, sizeof(op) - sizeof(long), 0);
 
-	//Pasamos el segundo operando al proceso OP_2
-	msgsnd(id_cola, (struct msgbuf *) &num2, sizeof(num2) - sizeof(long), 0);
+		//Pasamos el segundo operando al proceso OP_2
+		msgsnd(id_cola, (struct msgbuf *) &num2, sizeof(num2) - sizeof(long), 0);
+		
+		
+		//Leemos el resultado del motor
+		fifo_motor=open("fifo_motor", O_RDWR);
+		read(fifo_motor, &resultado, sizeof(resultado));
+		
+		printf("Resultado: %f\n", resultado);
+		printf("¿Desea realizar otra operacion? (s/n)");
+		scanf("%d", &op_seguir);
+		
+		close(fifo_motor);
+		unlink("fifo_motor");
+	}while(op_seguir == 's');
 	
 	
-	//Leemos el resultado del motor
-	fifo_motor=open("fifo_motor", O_RDWR);
-	read(fifo_motor, &resultado, sizeof(resultado));
-	
-	printf("Resultado: %f\n", resultado);
-	
-	close(fifo_motor);
-	unlink("fifo_motor");
 	
 	msgctl(id_cola, IPC_RMID, 0);
 	

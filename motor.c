@@ -47,6 +47,7 @@ int main(){
 	
 	//Pasamos el resultado al proceso interfaz
 	write(fifo_motor, &resultado, sizeof(resultado));
+	write(2, &resultado, sizeof(resultado));
 	
 	close(fifo_op2);
 	close(fifo_operador);
