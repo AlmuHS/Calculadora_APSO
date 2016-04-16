@@ -19,22 +19,43 @@ struct operacion{
 
 
 void menu(float *num1, float *num2, int *operacion){
+	char sig_operacion='+';
 	printf("Introduce un numero: ");
 	scanf("%f", num1);
 	
-	printf("Operacion\n");
-		printf("1. Suma\n");
+	printf("Operacion (+, -, *, /)\n");
+		/*printf("1. Suma\n");
 		printf("2. Resta\n");
 		printf("3. Multiplicacion\n");
-		printf("4. Division\n");
-	do{
+		printf("4. Division\n");*/
+	//printf("Selecciona operacion: ");
+	scanf("%c", &sig_operacion);
+	while(sig_operacion != '+' && sig_operacion != '-' && sig_operacion != '*' && sig_operacion != '/'){
 		printf("Selecciona operacion: ");
-		scanf("%d", operacion);
-	}while(*operacion < 1 || *operacion > 4);
+		scanf("%c", &sig_operacion);
+	}
 	do{
 		printf("Introduce otro numero: ");
 		scanf("%f", num2);
 	}while(*num2 == 0);
+	
+	switch(sig_operacion){
+		case '+':
+			*operacion = 1;
+		break;
+		
+		case '-':
+			*operacion = 2;
+		break;
+		
+		case '*':
+			*operacion = 3;
+		break;
+		
+		case '/':
+			*operacion = 4;
+		break;
+	}
 }
 
 int main(){
