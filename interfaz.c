@@ -9,7 +9,7 @@
 
 struct numero{
 	long tipo;
-	int num;
+	float num;
 };
 
 struct operacion{
@@ -18,24 +18,27 @@ struct operacion{
 };
 
 
-void menu(int *num1, int *num2, int *operacion){
+void menu(float *num1, float *num2, int *operacion){
 	printf("Introduce un numero: ");
-	scanf("%d", num1);
+	scanf("%f", num1);
 	
 	printf("Operacion\n");
 		printf("1. Suma\n");
 		printf("2. Resta\n");
 		printf("3. Multiplicacion\n");
 		printf("4. Division\n");
-	printf("Selecciona operacion: ");
-	scanf("%d", operacion);
-	
-	printf("Introduce otro numero: ");
-	scanf("%d", num2);
+	do{
+		printf("Selecciona operacion: ");
+		scanf("%d", operacion);
+	}while(*operacion < 1 || *operacion > 4);
+	do{
+		printf("Introduce otro numero: ");
+		scanf("%f", num2);
+	}while(*num2 == 0);
 }
 
 int main(){
-	int resultado; 
+	float resultado; 
 	int pid_op1, pid_op2, pid_operador;
 	int fifo_motor;
 	key_t clave_cola;
@@ -91,7 +94,7 @@ int main(){
 	fifo_motor=open("fifo_motor", O_RDWR);
 	read(fifo_motor, &resultado, sizeof(resultado));
 	
-	printf("Resultado: %d\n", resultado);
+	printf("Resultado: %f\n", resultado);
 	
 	close(fifo_motor);
 	unlink("fifo_motor");

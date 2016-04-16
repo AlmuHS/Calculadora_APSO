@@ -9,7 +9,7 @@
 
 struct numero{
 	long tipo;
-	int num;
+	float num;
 };
 
 

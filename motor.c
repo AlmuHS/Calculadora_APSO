@@ -6,7 +6,7 @@
 
 int main(){
 	int fifo_motor, fifo_op2, fifo_operador;
-	int num1, num2, resultado;
+	float num1, num2, resultado;
 	int operador;
 	
 	fifo_motor=open("fifo_motor", O_WRONLY);
