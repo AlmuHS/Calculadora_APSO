@@ -30,7 +30,7 @@ void menu(float *num1, float *num2, int *operacion){
 	do{
 		printf("Introduce otro numero: ");
 		scanf("%f", num2);
-	}while(*num2 == 0);
+	}while(*num2 == 0 && *operacion == 4);
 }
 
 int main(){
@@ -112,6 +112,9 @@ int main(){
 	unlink("fifo_op2");
 	unlink("fifo_operador");
 	msgctl(id_cola, IPC_RMID, 0);
+	
+	//Parche para matar al proceso motor
+	system("killall motor");
 	
 	return resultado;
 }
