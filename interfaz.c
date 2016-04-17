@@ -9,7 +9,7 @@
 
 #include "comunes.h"
 
-int op_seguir=0;
+int op_seguir = 0;
 
 void menu(float *num1, float *num2, int *operacion){	
 	if(op_seguir == 0){
@@ -17,20 +17,23 @@ void menu(float *num1, float *num2, int *operacion){
 		scanf("%f", num1);
 	}
 	
-	printf("Operacion (+, -, *, /)\n");
+	printf("Operacion\n");
 	printf("1. Suma\n");
 	printf("2. Resta\n");
 	printf("3. Multiplicacion\n");
 	printf("4. Division\n");
+	printf("5. Salir\n");
 	do{
 		printf("Selecciona operacion: ");
 		scanf("%d", operacion);
-	}while(*operacion < 1 || *operacion > 4);
+	}while(*operacion < 1 || *operacion > 5);
 	
-	do{
-		printf("Introduce otro numero: ");
-		scanf("%f", num2);
-	}while(*num2 == 0 && *operacion == 4);
+	if(*operacion != 5){
+		do{
+			printf("Introduce otro numero: ");
+			scanf("%f", num2);
+		}while(*num2 == 0 && *operacion == 4);
+	}
 }
 
 int main(){
@@ -71,7 +74,8 @@ int main(){
 	mkfifo("fifo_op2", 0777);
 	mkfifo("fifo_operador", 0777);
 
-		
+	op.opcion = 1;	
+	
 	do{	
 		//Indicamos el tipo de los parametros
 		op.tipo=3;
@@ -81,27 +85,30 @@ int main(){
 		//Obtenemos los parametros
 		menu(&num1.num, &num2.num, &op.opcion);
 		
-		//Pasamos el primer operando al proceso OP_1
-		msgsnd(id_cola, (struct msgbuf *) &num1, sizeof(num1) - sizeof(long), 0);
-		
-		//Pasamos el operador al proceso operador
-		msgsnd(id_cola, (struct msgbuf *) &op, sizeof(op) - sizeof(long), 0);
+		if(op.opcion != 5){
+			
+			op_seguir = 1;
 
-		//Pasamos el segundo operando al proceso OP_2
-		msgsnd(id_cola, (struct msgbuf *) &num2, sizeof(num2) - sizeof(long), 0);
-		
-		
-		//Leemos el resultado del motor
-		fifo_motor=open("fifo_motor", O_RDWR);
-		read(fifo_motor, &resultado, sizeof(resultado));
-		
-		printf("Resultado: %f\n", resultado);
-		printf("¿Desea realizar otra operacion? (1/0): ");
-		scanf("%d", &op_seguir);
+			//Pasamos el primer operando al proceso OP_1
+			msgsnd(id_cola, (struct msgbuf *) &num1, sizeof(num1) - sizeof(long), 0);
+			
+			//Pasamos el operador al proceso operador
+			msgsnd(id_cola, (struct msgbuf *) &op, sizeof(op) - sizeof(long), 0);
+
+			//Pasamos el segundo operando al proceso OP_2
+			msgsnd(id_cola, (struct msgbuf *) &num2, sizeof(num2) - sizeof(long), 0);
+			
+			
+			//Leemos el resultado del motor
+			fifo_motor=open("fifo_motor", O_RDWR);
+			read(fifo_motor, &resultado, sizeof(resultado));
+			
+			printf("Resultado: %f\n", resultado);
+		}
 		
 		//copiamos el resultado en op1
 		num1.num=resultado;
-	}while(op_seguir == 1);
+	}while(op.opcion != 5);
 	
 	kill(pid_op1, 32);
 	kill(pid_op2, 32);
