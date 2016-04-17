@@ -42,6 +42,7 @@ int main(){
 	int fifo_motor;
 	key_t clave_cola;
 	int id_cola;
+	char sig_operacion;
 	
 	struct operacion op;
 	struct numero num1, num2;
@@ -103,11 +104,32 @@ int main(){
 			fifo_motor=open("fifo_motor", O_RDWR);
 			read(fifo_motor, &resultado, sizeof(resultado));
 			
-			printf("Resultado: %f\n", resultado);
+			switch(op.opcion){
+				case 1:
+					sig_operacion = '+';
+				break;
+				
+				case 2:
+					sig_operacion = '-';
+				break;
+				
+				case 3:
+					sig_operacion = 'x';
+				break;
+				
+				case 4:
+					sig_operacion = '/';
+				break;
+			}
+			
+			//printf("Resultado: %f\n\n", resultado);
+			printf("%f %c %f = %f\n\n", num1.num, sig_operacion, num2.num, resultado);
+			
+			//copiamos el resultado en op1
+			num1.num=resultado;
 		}
 		
-		//copiamos el resultado en op1
-		num1.num=resultado;
+		
 	}while(op.opcion != 5);
 	
 	kill(pid_op1, 32);
