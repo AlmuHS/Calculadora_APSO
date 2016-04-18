@@ -23,17 +23,19 @@ void menu(float *num1, float *num2, int *operacion){
 	printf("3. Multiplicacion\n");
 	printf("4. Division\n");
 	printf("5. Salir\n");
+	printf("6. Nueva operacion\n");
 	do{
 		printf("Selecciona operacion: ");
 		scanf("%d", operacion);
-	}while(*operacion < 1 || *operacion > 5);
+	}while(*operacion < 1 || *operacion > 6);
 	
-	if(*operacion != 5){
+	if(*operacion != 5 && *operacion != 6){
 		do{
 			printf("Introduce otro numero: ");
 			scanf("%f", num2);
 		}while(*num2 == 0 && *operacion == 4);
 	}
+	else if(*operacion == 6) printf("Cache borrada\n\n");
 }
 
 int main(){
@@ -73,9 +75,7 @@ int main(){
 	//Creamos la fifo del motor
 	mkfifo("fifo_motor", 0777);
 	mkfifo("fifo_op2", 0777);
-	mkfifo("fifo_operador", 0777);
-
-	op.opcion = 1;	
+	mkfifo("fifo_operador", 0777);	
 	
 	do{	
 		//Indicamos el tipo de los parametros
@@ -84,11 +84,13 @@ int main(){
 		num2.tipo=2;
 		
 		//Obtenemos los parametros
+		op.opcion = 1;
 		menu(&num1.num, &num2.num, &op.opcion);
 		
 		if(op.opcion != 5){
 			
-			op_seguir = 1;
+			if(op.opcion != 6) op_seguir = 1;
+			else op_seguir = 0;
 
 			//Pasamos el primer operando al proceso OP_1
 			msgsnd(id_cola, (struct msgbuf *) &num1, sizeof(num1) - sizeof(long), 0);
@@ -122,8 +124,9 @@ int main(){
 				break;
 			}
 			
-			//printf("Resultado: %f\n\n", resultado);
-			printf("%f %c %f = %f\n\n", num1.num, sig_operacion, num2.num, resultado);
+						
+			//Mostramos el resultado
+			if(op_seguir == 1) printf("%f %c %f = %f\n\n", num1.num, sig_operacion, num2.num, resultado);
 			
 			//copiamos el resultado en op1
 			num1.num=resultado;
