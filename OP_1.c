@@ -1,9 +1,5 @@
-#include <stdio.h>
-#include <stdlib.h>
 #include <unistd.h>
-#include <fcntl.h>
 #include <sys/types.h>
-#include <sys/stat.h>
 #include <sys/msg.h>
 #include <signal.h>
 
@@ -46,7 +42,7 @@ int main(){
 		write(tubomotor[1], &num1.num, sizeof(num1.num));
 	}while(fin == 0);
 	
-	kill(pid_motor, 31);
+	kill(pid_motor, 9);
 	
 	return num1.num;
 }

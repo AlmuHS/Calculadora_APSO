@@ -1,17 +1,18 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <unistd.h>
-#include <fcntl.h>
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <sys/msg.h>
-#include <signal.h>
+#include <stdio.h> //printf(), scanf()
+#include <unistd.h> //fork(), execl();
+#include <fcntl.h> //open()
+#include <sys/types.h> //kill()
+#include <sys/stat.h> //mkfifo()
+#include <sys/msg.h> //colas de mensajes
+#include <signal.h> //signal()
 
 #include "comunes.h"
 
 int op_seguir = 0;
 
-void menu(float *num1, float *num2, int *operacion){	
+void menu(float *num1, float *num2, int *operacion){
+	
+	//Si se realiza una nueva operacion, se pregunta por el primer numero
 	if(op_seguir == 0){
 		printf("Introduce un numero: ");
 		scanf("%f", num1);
@@ -29,6 +30,7 @@ void menu(float *num1, float *num2, int *operacion){
 		scanf("%d", operacion);
 	}while(*operacion < 1 || *operacion > 6);
 	
+	//Si se elige alguna operacion, se pregunta por el segundo numero
 	if(*operacion != 5 && *operacion != 6){
 		do{
 			printf("Introduce otro numero: ");
@@ -89,7 +91,9 @@ int main(){
 		
 		if(op.opcion != 5){
 			
+			//Si el usuario no selecciona nueva operacion, ocultamos la pregunta del primer numero
 			if(op.opcion != 6) op_seguir = 1;
+			//Si el usuario selecciona nueva operacion, activamos la pregunta del primer numero
 			else op_seguir = 0;
 
 			//Pasamos el primer operando al proceso OP_1
@@ -125,7 +129,7 @@ int main(){
 			}
 			
 						
-			//Mostramos el resultado
+			//Si se ha realizado alguna operacion, mostramos el resultado
 			if(op_seguir == 1) printf("%f %c %f = %f\n\n", num1.num, sig_operacion, num2.num, resultado);
 			
 			//copiamos el resultado en op1
@@ -146,7 +150,7 @@ int main(){
 	msgctl(id_cola, IPC_RMID, 0);
 	
 	//Parche para matar al proceso motor
-	system("killall motor");
+	//system("killall motor");
 	
 	return resultado;
 }

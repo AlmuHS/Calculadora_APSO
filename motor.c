@@ -1,9 +1,6 @@
-#include <stdio.h>
 #include <stdlib.h>
-#include <unistd.h>
 #include <fcntl.h>
 #include <sys/types.h>
-#include <sys/stat.h>
 #include <signal.h>
 
 int fin = 0;
@@ -21,7 +18,7 @@ int main(){
 	fifo_op2=open("fifo_op2", O_RDONLY);
 	fifo_operador=open("fifo_operador", O_RDONLY);
 	
-	signal(31, llega_fin);
+	signal(9, llega_fin);
 	
 	do{
 		//Leemos el primer operando
