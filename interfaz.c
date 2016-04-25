@@ -140,22 +140,24 @@ int main(){
 		
 	}while(op.opcion != 5);
 	
-	//Mandamos las señales para finalizar los procesos
 	kill(pid_op1, 30);
 	kill(pid_op2, 31);
 	kill(pid_operador, 16);
+
+	//Cerramos las fifos y las colas
+	close(fifo_motor);
+	unlink("fifo_motor");
+	unlink("fifo_op2");
+	unlink("fifo_operador");
+	msgctl(id_cola, IPC_RMID, 0);
 
 	//Esperamos que finalicen los procesos
 	wait(&pid_op1);
 	wait(&pid_op2);
 	wait(&pid_operador);
 	
-	//Cerramos las fifos y la cola
-	close(fifo_motor);
-	unlink("fifo_motor");
-	unlink("fifo_op2");
-	unlink("fifo_operador");
-	msgctl(id_cola, IPC_RMID, 0);
+	//Parche para matar al proceso motor
+	//system("killall motor");
 	
 	return resultado;
 }

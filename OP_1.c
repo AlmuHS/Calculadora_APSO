@@ -43,10 +43,8 @@ int main(){
 		write(tubomotor[1], &num1.num, sizeof(num1.num));
 	}while(fin == 0);
 	
-	//Mandamos la señal para que finalice el proceso motor
 	kill(pid_motor, 9);
 	
-	//Esperamos que finalice el proceso motor
 	wait(&pid_motor);
 	
 	return num1.num;
