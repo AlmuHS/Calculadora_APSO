@@ -22,15 +22,15 @@ int main(){
 	
 	do{
 		//Leemos el primer operando
-		read(2, &num1, sizeof(num1));
+		while(read(2, &num1, sizeof(num1)) == 0);
 		//printf("Operando 1: %d\n", num1);
 		
 		//Leemos el segundo operando
-		read(fifo_op2, &num2, sizeof(num2));
+		while(read(fifo_op2, &num2, sizeof(num2)) == 0);
 		//printf("Operando 2: %d\n", num2);
 		
 		//Leemos el operador
-		read(fifo_operador, &operador, sizeof(operador));
+		while(read(fifo_operador, &operador, sizeof(operador)) == 0);
 		//printf("Operacion: %d\n", operador);
 		
 		//Realizamos la operacion

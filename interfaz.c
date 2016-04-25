@@ -109,7 +109,7 @@ int main(){
 			
 			//Leemos el resultado del motor
 			fifo_motor=open("fifo_motor", O_RDWR);
-			read(fifo_motor, &resultado, sizeof(resultado));
+			while(read(fifo_motor, &resultado, sizeof(resultado)) == 0);
 			
 			switch(op.opcion){
 				case 1:
