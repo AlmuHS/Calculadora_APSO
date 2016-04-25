@@ -21,7 +21,7 @@ int main(){
 	id_cola=msgget(clave_cola, 0600);
 	
 	//Nos preparamos para recibir señal de fin
-	signal(32, llega_fin);
+	signal(31, llega_fin);
 	
 	do{
 		msgrcv(id_cola, (struct msgbuf *) &num2, sizeof(num2) - sizeof(long), 2, 0);

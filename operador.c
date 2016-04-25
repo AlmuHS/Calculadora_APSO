@@ -20,7 +20,7 @@ int main(){
 	id_cola=msgget(clave_cola, 0600);
 	
 	//Nos preparamos para recibir señal de fin
-	signal(32, llega_fin);
+	signal(16, llega_fin);
 	
 	do{
 		//Leemos el operador de la cola

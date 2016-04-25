@@ -2,6 +2,7 @@
 #include <sys/types.h>
 #include <sys/msg.h>
 #include <signal.h>
+#include <sys/wait.h>
 
 #include "comunes.h"
 
@@ -32,7 +33,7 @@ int main(){
 	}
 	
 	//Nos preparamos para recibir señal de fin
-	signal(32, llega_fin);
+	signal(30, llega_fin);
 
 	
 	do{
@@ -42,7 +43,11 @@ int main(){
 		write(tubomotor[1], &num1.num, sizeof(num1.num));
 	}while(fin == 0);
 	
+	//Mandamos la señal para que finalice el proceso motor
 	kill(pid_motor, 9);
+	
+	//Esperamos que finalice el proceso motor
+	wait(&pid_motor);
 	
 	return num1.num;
 }
