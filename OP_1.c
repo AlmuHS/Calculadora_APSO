@@ -1,11 +1,3 @@
-#include <unistd.h>
-#include <sys/types.h>
-#include <sys/msg.h>
-#include <signal.h>
-#include <sys/wait.h>
-
-#include "comunes.h"
-
 //Copyright 2016 Almudena Garcia Jurado-Centurion
 
 /*This program is free software: you can redistribute it and/or modify
@@ -21,7 +13,13 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.*/
 
+#include <unistd.h>
+#include <sys/types.h>
+#include <sys/msg.h>
+#include <signal.h>
+#include <sys/wait.h>
 
+#include "comunes.h"
 
 int fin = 0;
 
