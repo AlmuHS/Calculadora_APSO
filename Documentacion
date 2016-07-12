@@ -1,0 +1,34 @@
+Calculadora APSO
+-----------------
+
+Esta es una calculadora programada para GNU/Linux mediante tecnicas de comunicacion de procesos.
+
+La calculadora esta formada por un proceso principal, llamado interfaz, que recoge los datos del usuario y los manda a tres procesos hijos a traves de una cola de mensajes.
+Esos datos van hacia otro proceso llamado motor, que realiza la operacion, y envia el resultado a la interfaz a traves de una fifo.
+
+El funcionamiento basico de la aplicacion es el siguiente:
+
+El proceso interfaz crea tres procesos: OP_1, OP_2 y OP_3; y crea una cola de mensajes entre los tres.
+Ademas, crea tres fifos: fifomotor, fifo_op2 y fifo_operador, que seran usadas para comunicarse con el proceso motor.
+Cuando el usuario introduce la operacion a realizar, el proceso manda los datos a traves de la cola para que lo lean los respectivos procesos
+
+El proceso OP_1 lee de la cola el primer numero, crea un proceso hijo llamado motor y una pipe entre ellos, a traves de la cual reenvia el primer numero al motor.
+
+El proceso OP_2 lee el segundo numero de la cola, y lo reenvia al motor a traves de una fifo llamada fifo_op2
+
+El proceso operador, lee el operador de la cola, y lo reenvia al motor a traves de otra fifo llamada fifo_operador.
+
+Finalmente, el motor lee los tres datos, efectua la operacion, y manda el resultado a la interfaz a traves de una fifo llamada fifo_motor
+
+
+Ademas, la aplicacion incorpora las funcionalidades de operacion en cadena (activada por defecto), y de nueva operacion.
+
+Para ello, todos los procesos se ejecutan en bucle, controlados por una señal llamada fin, y con una realimentacion del resultado hacia OP_1.
+
+Al terminar una operacion, el resultado se copia en la variable correspondiente al primer numero, con el fin de poder ejecutar operaciones en cadena, y se desactiva la peticion por teclado del primer numero.
+
+Si el usuario selecciona nueva operacion, se reactiva la peticion por teclado del primer numero, lo que sobreescribe el resultado anterior, y da inicio a una nueva operacion completa.
+
+Cuando el usuario selecciona la opcion de salir, el proceso interfaz manda la señal de fin a todos los procesos para finalizarlos.
+
+Todo esto esta controlado por la funcion menu, perteneciente al proceso interfaz
