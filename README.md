@@ -2,13 +2,13 @@
 
 Esta es una calculadora programada para GNU/Linux mediante técnicas de comunicación de procesos.
 
-La calculadora está formada por un proceso principal, llamado interfaz, que recoge los datos del usuario y los manda a tres procesos hijos a través de una cola de mensajes.
+La calculadora está formada por un proceso principal, llamado interfaz, que recoge los datos del usuario y los manda a dos procesos hijos a través de una cola de mensajes.
 Esos datos van hacia otro proceso llamado motor, que realiza la operación, y envía el resultado a la interfaz a través de una fifo.
 
 Funcionamiento básico de la aplicacion:
 --------------------------------------
 
-El proceso interfaz crea tres procesos: OP_1, OP_2 y OP_3; y crea una cola de mensajes entre los tres.
+El proceso interfaz crea dos procesos: OP_1 y OP_2; y crea una cola de mensajes entre los dos.
 Ademas, crea tres fifos: fifomotor, fifo_op2 y fifo_operador, que serán usadas para comunicarse con el proceso motor.
 Cuando el usuario introduce la operación a realizar, el proceso manda los datos a través de la cola para que lo lean los respectivos procesos.
 
