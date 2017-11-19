@@ -15,6 +15,8 @@ along with Calculadora_APSO.  If not, see <http://www.gnu.org/licenses/>.*/
 #include <fcntl.h>
 #include <sys/msg.h>
 #include <signal.h>
+#include <unistd.h>
+
 
 #include "comunes.h"
 
