@@ -45,7 +45,5 @@ int main(){
 		write(fifo_op2, &num2.num, sizeof(num2.num));
 	}while(fin == 0);
 	
-	//printf("Segundo numero: %d\n", num2.num);
-	
 	return num2.num;
 }

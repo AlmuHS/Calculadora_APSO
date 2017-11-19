@@ -46,7 +46,6 @@ int main(){
 		write(fifo_operador, &op.opcion, sizeof(op.opcion));
 	}while(fin == 0);
 
-	//printf("Operador: %i\n", op.opcion);
 	
 	return op.opcion;
 }
