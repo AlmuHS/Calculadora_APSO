@@ -1,6 +1,6 @@
-//Copyright 2016 Almudena Garcia Jurado-Centurion
+/*Copyright 2016 Almudena Garcia Jurado-Centurion
 
-/*This file is part of Calculadora_APSO.
+This file is part of Calculadora_APSO.
 
 Calculadora_APSO is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
