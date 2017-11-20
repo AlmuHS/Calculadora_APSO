@@ -2,7 +2,7 @@
 
 Esta es una calculadora programada para GNU/Linux mediante técnicas de comunicación de procesos.
 
-La calculadora está formada por un proceso principal, llamado interfaz, que recoge los datos del usuario y los manda a dos procesos hijos a través de una cola de mensajes.
+La calculadora está formada por un proceso principal, llamado interfaz, que recoge los datos del usuario y los manda a tres procesos hijos a través de una cola de mensajes.
 Esos datos van hacia otro proceso llamado motor, que realiza la operación, y envía el resultado a la interfaz a través de una fifo.
 
 Funcionamiento básico de la aplicacion:
