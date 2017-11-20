@@ -8,7 +8,7 @@ Esos datos van hacia otro proceso llamado motor, que realiza la operación, y en
 Funcionamiento básico de la aplicacion:
 --------------------------------------
 
-El proceso interfaz crea tres procesos: OP_1, OP_2 y operador; y crea una cola de mensajes entre los dos.
+El proceso interfaz crea tres procesos: OP_1, OP_2 y operador; y crea una cola de mensajes entre los tres.
 Ademas, crea tres fifos: fifomotor, fifo_op2 y fifo_operador, que serán usadas para comunicarse con el proceso motor.
 Cuando el usuario introduce la operación a realizar, el proceso manda los datos a través de la cola para que lo lean los respectivos procesos.
 
