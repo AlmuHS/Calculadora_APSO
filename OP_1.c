@@ -1,4 +1,4 @@
-/*Copyright 2016 Almudena Garcia Jurado-Centurion
+/*Copyright 2016 2018 Almudena Garcia Jurado-Centurion
 
 This file is part of Calculadora_APSO.
 
@@ -23,29 +23,40 @@ along with Calculadora_APSO.  If not, see <http://www.gnu.org/licenses/>.*/
 
 #include "comunes.h"
 
+//Variable control, usada para indicar la finalizacion del programa
 int fin = 0;
 
+//Funcion asociada a la senal de fin, que activa la variable de control
 void llega_fin(){
 	fin = 1;
 }
 
 int main(){
+
+	//Identificadores de procesos y estructuras de comunicacion
 	int pid_motor, id_cola, tubomotor[2];
+
+	//Clave de la cola de mensajes, que comunica con el proceso principal
 	key_t clave_cola;
+
+	//Struct usado para guardar la informacion de la cola de mensajes
 	struct numero num1;
 	
-	//Abrimos la cola
-	clave_cola=ftok("./Makefile", 1024);
-	id_cola=msgget(clave_cola, 0600);
+	//Abrimos la cola, que recibira el primer operador del proceso principal
+	clave_cola = ftok("./Makefile", 1024);
+	id_cola = msgget(clave_cola, 0600);
 	
-	//Creamos la pipe
+	//Creamos la pipe tubomotor, que usaremos para enviar el dato leido al proceso motor
 	pipe(tubomotor);
 	
 	//Creamos el proceso hijo motor
-	pid_motor=fork();
-	if(pid_motor==0){
+	pid_motor = fork();
+	if(pid_motor == 0){
+
+		//Reubicamos la posicion de lectura de la pipe en el canal 2
 		close(2);
-		dup(tubomotor[0]);
+		dup(tubomotor[0]);//La posicion de lectura es la ubicada en la posicion 0 del array
+
 		execl("motor", "motor", NULL);
 	}
 	
@@ -54,15 +65,24 @@ int main(){
 
 	
 	do{
+		//Leemos el primer operando del proceso principal, desde la cola de mensajes
 		msgrcv(id_cola, (struct msgbuf *) &num1, sizeof(num1) - sizeof(long), 1, 0);
 		
 		//Pasamos el primer operando al motor
 		write(tubomotor[1], &num1.num, sizeof(num1.num));
+
+	//Repetimos el proceso hasta recibir la senal de fin
 	}while(fin == 0);
 	
+	//Una vez recibida la senal de fin, iniciamos la finalizacion del programa
+
+	//Transmitimos la senal al proceso motor
 	kill(pid_motor, 9);
 	
+	//Esperamos a que el proceso motor finalice
 	wait(&pid_motor);
-	
+
+	//Finalizamos el programa	
+
 	return num1.num;
 }
